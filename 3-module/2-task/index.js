@@ -5,5 +5,23 @@
  * @returns {number[]}
  */
 function filterRange(arr, a, b) {
-  // ваш код...
+  return arr.filter(item => item >= a && item <=b);
 }
+
+
+// Первый вариант:
+/*
+function filterRange(arr, a, b) {
+  let filteredArr = [];
+
+  for (let item of arr) {
+
+    if (item >= a && item <= b) {
+      filteredArr.push(item);
+    }
+
+  }
+
+  return filteredArr;
+}
+*/
