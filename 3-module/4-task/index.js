@@ -5,13 +5,10 @@
  * @returns {string}
  */
 function showSalary(users, age) {
-  let salaries = [];
-
-  for (let user of users) {
-    if (user.age <= age) {
-      salaries.push(`${user.name}, ${user.balance}`);
-    }
-  }
+  const filtredUsers = users.filter(item => item.age <= age);
+  
+  const salaries = filtredUsers.map(item => 
+    `${item.name}, ${item.balance}`);
 
   return salaries.join("\n");
 }
