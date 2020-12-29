@@ -3,9 +3,7 @@
  * @return {void}
  */
 function makeDiagonalRed(table) {
-    const rows = table.getElementsByTagName("tr");
+    const rows = table.querySelectorAll("tr");
 
-    for (let i = 0; i < rows.length; i++) {
-        rows[i].children[i].style.backgroundColor = "red";
-    }
+    rows.forEach((item, i) => item.children[i].style.backgroundColor = "red");
 }
