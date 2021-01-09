@@ -1,28 +1,24 @@
 function initCarousel() {
-  const carousel = document.querySelector('.carousel');
-  const arrowLeftClass = 'carousel__arrow_left';
-  const arrowRightClass = 'carousel__arrow_right';
-  const carouselArrowLeft = document.querySelector(`.${arrowLeftClass}`);
-  const carouselArrowRight = document.querySelector(`.${arrowRightClass}`);
-  const slide = document.querySelector('.carousel__inner');
-  const numberOfSlides = document.querySelectorAll('.carousel__slide').length;
-  const slideWidth = document.querySelector('.carousel__slide').offsetWidth;
+  const CAROUSEL_ARROW_LEFT = document.querySelector('.carousel__arrow_left');
+  const CAROUSEL_ARROW_RIGHT = document.querySelector('.carousel__arrow_right');
+  const CAROUSEL_INNER = document.querySelector('.carousel__inner');
+  const NUMBER_OF_SLIDES = document.querySelectorAll('.carousel__slide').length;
+  const SLIDE_WIDTH = document.querySelector('.carousel__slide').offsetWidth;
   let counter = 0;
 
-  hideArrow(carouselArrowLeft);
+  hideArrow(CAROUSEL_ARROW_LEFT);
 
-  carousel.addEventListener('click', function(event) {
-    if (event.target == carouselArrowRight  || event.target == carouselArrowRight.firstElementChild) {
-      counter++;
-      slide.style.transform = translateSlide(slideWidth, counter);
-    }
-    else if (event.target == carouselArrowLeft || event.target == carouselArrowLeft.firstElementChild) {
-      counter--;
-      slide.style.transform = translateSlide(slideWidth, counter);
-    }
-    hideOrShowArrow(counter, carouselArrowLeft, carouselArrowRight, numberOfSlides);
+  CAROUSEL_ARROW_LEFT.addEventListener('click', () => {
+    counter--;
+    CAROUSEL_INNER.style.transform = translateSlide(SLIDE_WIDTH, counter);
+    hideOrShowArrow(counter, CAROUSEL_ARROW_LEFT, CAROUSEL_ARROW_RIGHT, NUMBER_OF_SLIDES)
   })
-  
+
+  CAROUSEL_ARROW_RIGHT.addEventListener('click', () => {
+    counter++;
+    CAROUSEL_INNER.style.transform = translateSlide(SLIDE_WIDTH, counter);
+    hideOrShowArrow(counter, CAROUSEL_ARROW_LEFT, CAROUSEL_ARROW_RIGHT, NUMBER_OF_SLIDES)
+  })
 }
 
 function hideArrow(arrow) {
