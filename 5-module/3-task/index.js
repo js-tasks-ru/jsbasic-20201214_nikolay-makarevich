@@ -1,23 +1,23 @@
 function initCarousel() {
-  const CAROUSEL_ARROW_LEFT = document.querySelector('.carousel__arrow_left');
-  const CAROUSEL_ARROW_RIGHT = document.querySelector('.carousel__arrow_right');
-  const CAROUSEL_INNER = document.querySelector('.carousel__inner');
-  const NUMBER_OF_SLIDES = document.querySelectorAll('.carousel__slide').length;
-  const SLIDE_WIDTH = document.querySelector('.carousel__slide').offsetWidth;
+  const carouselArrowLeft = document.querySelector('.carousel__arrow_left');
+  const carouselArrowRight = document.querySelector('.carousel__arrow_right');
+  const carouselInner = document.querySelector('.carousel__inner');
+  const numberOfSlides = document.querySelectorAll('.carousel__slide').length;
+  const slideWidth = document.querySelector('.carousel__slide').offsetWidth;
   let counter = 0;
 
-  hideArrow(CAROUSEL_ARROW_LEFT);
+  hideArrow(carouselArrowLeft);
 
-  CAROUSEL_ARROW_LEFT.addEventListener('click', () => {
+  carouselArrowLeft.addEventListener('click', () => {
     counter--;
-    CAROUSEL_INNER.style.transform = translateSlide(SLIDE_WIDTH, counter);
-    hideOrShowArrow(counter, CAROUSEL_ARROW_LEFT, CAROUSEL_ARROW_RIGHT, NUMBER_OF_SLIDES)
+    carouselInner.style.transform = translateSlide(slideWidth, counter);
+    hideOrShowArrow(counter, carouselArrowLeft, carouselArrowRight, numberOfSlides)
   })
 
-  CAROUSEL_ARROW_RIGHT.addEventListener('click', () => {
+  carouselArrowRight.addEventListener('click', () => {
     counter++;
-    CAROUSEL_INNER.style.transform = translateSlide(SLIDE_WIDTH, counter);
-    hideOrShowArrow(counter, CAROUSEL_ARROW_LEFT, CAROUSEL_ARROW_RIGHT, NUMBER_OF_SLIDES)
+    carouselInner.style.transform = translateSlide(slideWidth, counter);
+    hideOrShowArrow(counter, carouselArrowLeft, carouselArrowRight, numberOfSlides)
   })
 }
 
