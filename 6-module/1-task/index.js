@@ -31,41 +31,39 @@
 export default class UserTable {
   constructor(rows) {
     this._rows = rows;
-    this.elem = document.createElement('table');
-    this.renderTable();
+    this.elem = null;
+    this._renderTable();
   }
 
-  renderTable() {
-    this.elem.innerHTML = `${tableHeaderTemplate()}
-          ${tableBodyTemplate(this._rows)}`;
+  _renderTable() {
+    this.elem = document.createElement('table');
+    this.elem.innerHTML = `${tableTemplate(tableHeaderNames, this._rows)}`;
 
-    this.elem.addEventListener('click', (event) => {
-      const target = event.target;
+    this.elem.addEventListener('click', this._onDeleteButtonClick)
+  }
+
+  _onDeleteButtonClick(event) {
+    const target = event.target;
 
       if (target.tagName !== 'BUTTON') {
         return;
       }
 
-      const tr = target.closest('tr');
-      tr.remove();
-    })
+      target.closest('tr').remove();
   }
 }   
-  
-function tableHeaderTemplate() {
-  return `<thead>
-      <tr>
-        <th>Имя</th>
-        <th>Возраст</th>
-        <th>Зарплата</th>
-        <th>Город</th>
-        <th></th>
-      </tr>
-    </thead>`
-}  
 
-function tableBodyTemplate(items = []) {
-  return `<tbody>
+const tableHeaderNames = ['Имя', 'Возраст', 'Зарплата', 'Город'];
+  
+
+function tableTemplate(headerNames, items) {
+  return `<thead>
+  <tr>
+    ${headerNames.map(item => `<th>${item}</th>`).join('')}
+    <th></th>
+  </tr>
+</thead>
+  <tbody>
       ${items.map(item => `<tr>${tableCellsTemplate(item)}${deleteTableRowButton()}</tr>`).join('')}
     </tbody>`;
 }
