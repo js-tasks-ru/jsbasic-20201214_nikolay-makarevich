@@ -4,28 +4,18 @@ export default class Carousel {
   constructor(slides) {
     this.slides = slides;
     this.elem = null;
-    this._carouselInner = null;
-    this._numberOfSlides = this.slides.length;
     this._currentSlide = 0;
 
+    this._onCarouselArrowLeftClick = this._onCarouselArrowLeftClick.bind(this);
+    this._onCarouselArrowRightClick = this._onCarouselArrowRightClick.bind(this);
     this._onCarouselButtonClick = this._onCarouselButtonClick.bind(this);
 
     this._render();
   }
 
   _render() {
-    this.elem = createElement(carouselTemplate());
-    this._carouselInner = createElement(carouselInnerTemplate());
-    this._carouselInner.innerHTML = this.slides.map(slide => carouselSlideTemplate(
-      slide.name,
-      slide.price, 
-      slide.image,
-      slide.id)
-      ).join('');
-    
-    this.elem.innerHTML = carouselArrowsTemplate();
-    this.elem.append(this._carouselInner);
-
+    this.elem = createElement(carouselTemplate(this.slides));
+      
     hideOrShowArrows(this._currentSlide, this._numberOfSlides, this.carouselArrowLeft, this.carouselArrowRight);
     
     this.carouselArrowLeft.addEventListener('click', this._onCarouselArrowLeftClick);
@@ -45,16 +35,28 @@ export default class Carousel {
     return this.elem.querySelector('.carousel__button');
   }
 
+  get carouselInner() {
+    return this.elem.querySelector('.carousel__inner');
+  }
+
+  get numberOfSlides() {
+    return this.slides.length;
+  }
+
+  get carouselSlideWidth() {
+    return this.elem.querySelector('.carousel__slide').offsetWidth;
+  }
+
   _onCarouselArrowLeftClick() {
     this._currentSlide--;
-    this._carouselInner.style.transform = translateSlide(this._slideWidth, this._currentSlide);
-    hideOrShowArrows(this._currentSlide, this._numberOfSlides, this.carouselArrowLeft, this.carouselArrowRight);
+    this.carouselInner.style.transform = translateSlide(this.carouselSlideWidth, this._currentSlide);
+    hideOrShowArrows(this._currentSlide, this.numberOfSlides, this.carouselArrowLeft, this.carouselArrowRight);
   }
 
   _onCarouselArrowRightClick() {
     this._currentSlide++;
-    this._carouselInner.style.transform = translateSlide(this._slideWidth, this._currentSlide);
-    hideOrShowArrows(this._currentSlide, this._numberOfSlides, this.carouselArrowLeft, this.carouselArrowRight);
+    this.carouselInner.style.transform = translateSlide(this.carouselSlideWidth, this._currentSlide);
+    hideOrShowArrows(this._currentSlide, this.numberOfSlides, this.carouselArrowLeft, this.carouselArrowRight);
   }
 
   _onCarouselButtonClick() {
@@ -62,29 +64,30 @@ export default class Carousel {
       detail: this.slides[0].id,
       bubbles: true
     })
+
     this.carouselButton.dispatchEvent(event);
   }
 
-  get carouselSlideWidth() {
-    return this.elem.querySelector('.carousel__slide').offsetWidth;
-  }
 }
 
-function carouselTemplate() {
-  return `<div class="carousel"></div>`
-}
+function carouselTemplate(items) {
+  return `<div class="carousel">
+            <div class="carousel__arrow carousel__arrow_right">
+              <img src="/assets/images/icons/angle-icon.svg" alt="icon">
+            </div>
+            <div class="carousel__arrow carousel__arrow_left">
+              <img src="/assets/images/icons/angle-left-icon.svg" alt="icon">
+            </div>
 
-function carouselArrowsTemplate() {
-  return `<div class="carousel__arrow carousel__arrow_right">
-            <img src="/assets/images/icons/angle-icon.svg" alt="icon">
-          </div>
-          <div class="carousel__arrow carousel__arrow_left">
-            <img src="/assets/images/icons/angle-left-icon.svg" alt="icon">
+            <div class="carousel__inner">
+              ${items.map(item => carouselSlideTemplate(
+                item.name,
+                item.price, 
+                item.image,
+                item.id)
+                ).join('')}
+            </div>
           </div>`
-}
-
-function carouselInnerTemplate() {
-  return `<div class="carousel__inner"></div>`
 }
 
 function carouselSlideTemplate(name, price, image, id) {
