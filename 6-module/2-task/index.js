@@ -14,8 +14,7 @@ export default class ProductCard {
   }
 
   _render() {
-    this.elem = createElement(cardTemplate());
-    this.elem.innerHTML = cardInnerTemplate(this._name, this._image, this._price);
+    this.elem = createElement(cardTemplate(this._name, this._image, this._price));
 
     this.cardButton.addEventListener('click', this._onCardButtonClick);
   }
@@ -34,19 +33,17 @@ export default class ProductCard {
   }
 }
 
-function cardTemplate() {
-  return `<div class="card"></div>`
-}
-
-function cardInnerTemplate(name, image, price) {
-  return `<div class="card__top">
-        <img src="/assets/images/products/${image}" class="card__image" alt="product">
-        <span class="card__price">€${price.toFixed(2)}</span>
-    </div>
-    <div class="card__body">
-        <div class="card__title">${name}</div>
-        <button type="button" class="card__button">
-            <img src="/assets/images/icons/plus-icon.svg" alt="icon">
-        </button>
-    </div>`
+function cardTemplate(name, image, price) {
+  return `<div class="card">
+            <div class="card__top">
+                <img src="/assets/images/products/${image}" class="card__image" alt="product">
+                <span class="card__price">€${price.toFixed(2)}</span>
+            </div>
+            <div class="card__body">
+                <div class="card__title">${name}</div>
+                <button type="button" class="card__button">
+                    <img src="/assets/images/icons/plus-icon.svg" alt="icon">
+                </button>
+            </div>
+          </div>`
 }
