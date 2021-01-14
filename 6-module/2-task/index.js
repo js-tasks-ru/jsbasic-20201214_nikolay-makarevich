@@ -14,7 +14,7 @@ export default class ProductCard {
   }
 
   _render() {
-    this.elem = makeElement('div', 'card');
+    this.elem = createElement(cardTemplate());
     this.elem.innerHTML = cardInnerTemplate(this._name, this._image, this._price);
 
     this.cardButton.addEventListener('click', this._onCardButtonClick);
@@ -29,15 +29,13 @@ export default class ProductCard {
       detail: this._id,
       bubbles: true
     })
+    
     this.cardButton.dispatchEvent(event);
-
   }
 }
 
-function makeElement(tagName, className, imgName = '') {
-  const element = document.createElement(tagName);
-  element.classList.add(className);  
-  return element;
+function cardTemplate() {
+  return `<div class="card"></div>`
 }
 
 function cardInnerTemplate(name, image, price) {
