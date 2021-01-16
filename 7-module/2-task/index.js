@@ -20,7 +20,8 @@ export default class Modal {
 
   close() {
     document.body.classList.remove('is-modal-open');
-    document.body.querySelector('.modal').remove();
+    document.querySelector('.modal').remove();
+    document.removeEventListener('keydown', this._keydown);
   }
 
   setTitle(title) {
@@ -28,11 +29,11 @@ export default class Modal {
   }
 
   setBody(modalBody) {
-    this._modalBody = modalBody.innerHTML;
+    this._modalBody = modalBody.outerHTML;
   }
 
   _keydown(event) {
-    if(event.code === `Escape`) {
+    if(event.code === `Escape` && document.querySelector('.modal')) {
       this.close();
     }
   }
