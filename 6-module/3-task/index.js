@@ -2,8 +2,8 @@ import createElement from '../../assets/lib/create-element.js';
 
 export default class Carousel {
   constructor(slides) {
-    this.slides = slides;
-    this.elem = null;
+    this._slides = slides;
+    this._сontainer = null;
     this._currentSlide = 0;
 
     this._onCarouselArrowLeftClick = this._onCarouselArrowLeftClick.bind(this);
@@ -14,58 +14,76 @@ export default class Carousel {
   }
 
   _render() {
-    this.elem = createElement(carouselTemplate(this.slides));
+    this._container = createElement(carouselTemplate(this._slides));
       
-    hideOrShowArrows(this._currentSlide, this._numberOfSlides, this.carouselArrowLeft, this.carouselArrowRight);
+    this._hideOrShowArrows();
     
-    this.carouselArrowLeft.addEventListener('click', this._onCarouselArrowLeftClick);
-    this.carouselArrowRight.addEventListener('click', this._onCarouselArrowRightClick);
-    this.carouselButton.addEventListener('click', this._onCarouselButtonClick);
+    this._carouselArrowLeft.addEventListener('click', this._onCarouselArrowLeftClick);
+    this._carouselArrowRight.addEventListener('click', this._onCarouselArrowRightClick);
+    this._carouselButton.addEventListener('click', this._onCarouselButtonClick);
   }
 
-  get carouselArrowLeft() {
+  get _carouselArrowLeft() {
     return this.elem.querySelector('.carousel__arrow_left');
   }
   
-  get carouselArrowRight() {
+  get _carouselArrowRight() {
     return this.elem.querySelector('.carousel__arrow_right');
   }
 
-  get carouselButton() {
+  get _carouselButton() {
     return this.elem.querySelector('.carousel__button');
   }
 
-  get carouselInner() {
+  get _carouselInner() {
     return this.elem.querySelector('.carousel__inner');
   }
 
-  get numberOfSlides() {
-    return this.slides.length;
+  get _numberOfSlides() {
+    return this._slides.length;
   }
 
-  get carouselSlideWidth() {
+  get _carouselSlideWidth() {
     return this.elem.querySelector('.carousel__slide').offsetWidth;
+  }
+
+  get elem() {
+    return this._container;
+  }
+
+  _hideOrShowArrows() {
+    if (this._currentSlide == 0) {
+      this._carouselArrowLeft.style.display = 'none';
+    } else if (this._currentSlide == this._numberOfSlides - 1) {
+      this._carouselArrowRight.style.display = 'none';
+    } else {
+      this._carouselArrowLeft.style.display = '';
+      this._carouselArrowRight.style.display = '';
+    }
   }
 
   _onCarouselArrowLeftClick() {
     this._currentSlide--;
-    this.carouselInner.style.transform = translateSlide(this.carouselSlideWidth, this._currentSlide);
-    hideOrShowArrows(this._currentSlide, this.numberOfSlides, this.carouselArrowLeft, this.carouselArrowRight);
+    this._update();
   }
 
   _onCarouselArrowRightClick() {
     this._currentSlide++;
-    this.carouselInner.style.transform = translateSlide(this.carouselSlideWidth, this._currentSlide);
-    hideOrShowArrows(this._currentSlide, this.numberOfSlides, this.carouselArrowLeft, this.carouselArrowRight);
+    this._update();
   }
 
   _onCarouselButtonClick() {
     const event = new CustomEvent('product-add', {
-      detail: this.slides[0].id,
+      detail: this._slides[0].id,
       bubbles: true
     })
 
-    this.carouselButton.dispatchEvent(event);
+    this._carouselButton.dispatchEvent(event);
+  }
+
+  _update() {
+    this._carouselInner.style.transform = translateX(this._carouselSlideWidth, this._currentSlide);
+    this._hideOrShowArrows();
   }
 
 }
@@ -103,17 +121,8 @@ function carouselSlideTemplate(name, price, image, id) {
 </div>`
 }
 
-function translateSlide (width, multiplier) {
+function translateX (width, multiplier) {
   return `translateX(-${width*multiplier}px)`;
 }
 
-function hideOrShowArrows(currentSlide, numberOfSlides, leftArrow, rightArrow) {
-  if (currentSlide == 0) {
-    leftArrow.style.display = 'none';
-  } else if (currentSlide == numberOfSlides - 1) {
-    rightArrow.style.display = 'none';
-  } else {
-    leftArrow.style.display = '';
-    rightArrow.style.display = '';
-  }
-}
+

@@ -31,15 +31,15 @@
 export default class UserTable {
   constructor(rows) {
     this._rows = rows;
-    this.elem = null;
+    this._container = null;
     this._renderTable();
   }
 
   _renderTable() {
-    this.elem = document.createElement('table');
-    this.elem.innerHTML = `${tableTemplate(tableHeaderNames, this._rows)}`;
+    this._container = document.createElement('table');
+    this._container.innerHTML = tableTemplate(tableHeaderNames, this._rows);
 
-    this.elem.addEventListener('click', this._onDeleteButtonClick)
+    this._container.addEventListener('click', this._onDeleteButtonClick)
   }
 
   _onDeleteButtonClick(event) {
@@ -50,6 +50,10 @@ export default class UserTable {
       }
 
       target.closest('tr').remove();
+  }
+
+  get elem() {
+    return this._container;
   }
 }   
 
