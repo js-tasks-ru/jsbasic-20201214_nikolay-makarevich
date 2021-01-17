@@ -20,7 +20,7 @@ export default class Carousel {
     
     this._carouselArrowLeft.addEventListener('click', this._onCarouselArrowLeftClick);
     this._carouselArrowRight.addEventListener('click', this._onCarouselArrowRightClick);
-    this._carouselButton.addEventListener('click', this._onCarouselButtonClick);
+    this._carouselInner.addEventListener('click', this._onCarouselButtonClick);
   }
 
   get _carouselArrowLeft() {
@@ -72,13 +72,20 @@ export default class Carousel {
     this._update();
   }
 
-  _onCarouselButtonClick() {
+  _onCarouselButtonClick(evt) {
+    const target = evt.target;
+    if (!target.tagName == 'BUTTON') {
+      return;
+    }
+
+    const slide = target.closest('.carousel__slide');
+
     const event = new CustomEvent('product-add', {
-      detail: this._slides[0].id,
+      detail: slide.dataset.id,
       bubbles: true
     })
 
-    this._carouselButton.dispatchEvent(event);
+    this._carouselInner.dispatchEvent(event);
   }
 
   _update() {
