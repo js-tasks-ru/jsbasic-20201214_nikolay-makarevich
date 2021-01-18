@@ -8,6 +8,7 @@ export default class StepSlider {
     this._onSliderChange = this._onSliderChange.bind(this);
     this._onThumbMove = this._onThumbMove.bind(this);
     this._onThumbPointerDown = this._onThumbPointerDown.bind(this);
+    this._onPointerUp = this._onPointerUp.bind(this);
 
     this._render();
   }
@@ -42,18 +43,13 @@ export default class StepSlider {
 
     document.addEventListener('pointermove', this._onThumbMove);
 
-    document.addEventListener('pointerup', () => {
-      this._sliderLeftPercent();
-      this._onSliderChange();
-      
-      this._sliderElements.slider.classList.remove('slider_dragging');
-
-      document.removeEventListener('pointermove', this._onThumbMove);
-    }, { once: true });
+    document.addEventListener('pointerup', this._onPointerUp, { once: true })
   }
 
   _onThumbMove(event) {
     this._calculateParams(event);
+
+    this._sliderElements.sliderValue.textContent = this._value;
 
     this._sliderMovePercent();
 
@@ -63,8 +59,19 @@ export default class StepSlider {
     this._sliderElements.slider.classList.add('slider_dragging');
   }
 
+  _onPointerUp() {
+    this._sliderLeftPercent();
+    this._onSliderChange();
+      
+    this._sliderElements.slider.classList.remove('slider_dragging');
+
+    document.removeEventListener('pointermove', this._onThumbMove);
+  }
+
   _onSliderClick(event) {
     this._calculateParams(event);
+
+    this._sliderElements.sliderValue.textContent = this._value;
 
     this._sliderLeftPercent();
 
@@ -98,15 +105,18 @@ export default class StepSlider {
 
   _calculateParams(event){
     this._sliderCoords = this._sliderElements.slider.getBoundingClientRect();
+    
     this._sliderWidth = this._sliderElements.slider.offsetWidth;
     this._stepWidth = this._sliderWidth / (this._steps - 1);
     this._clickPosition = event.pageX - this._sliderCoords.left;
+
     if (this._clickPosition <= 0 || this._clickPosition >= this._sliderWidth) {
       return;
     }
+
     this._previousValue = this._value;
     this._value = Math.round(this._clickPosition / this._stepWidth);
-    this._sliderElements.sliderValue.textContent = this._value;
+
     this._movePercent = Math.round(100 * this._clickPosition / this._sliderWidth);
     this._leftPercent = Math.round(100 * (this._stepWidth * this._value) / this._sliderWidth);
   }
