@@ -153,9 +153,9 @@ export default class Cart {
       }
 
       let productId = cartItem.product.id;
-      let productCount = this._modalBody.querySelector(`[data-product-id="${productId}"] .cart-counter__count`); 
-      let productPrice = this._modalBody.querySelector(`[data-product-id="${productId}"] .cart-product__price`); 
-      let infoPrice = this._modalBody.querySelector(`.cart-buttons__info-price`);
+      let productCount = document.querySelector(`[data-product-id="${productId}"] .cart-counter__count`); 
+      let productPrice = document.querySelector(`[data-product-id="${productId}"] .cart-product__price`); 
+      let infoPrice = document.querySelector(`.cart-buttons__info-price`);
 
       productCount.innerHTML = cartItem.count;
       productPrice.innerHTML = `€${(cartItem.product.price * cartItem.count).toFixed(2)}`
