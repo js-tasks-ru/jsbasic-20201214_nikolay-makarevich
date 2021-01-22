@@ -39,9 +39,6 @@ export default class CartIcon {
   }
 
   updatePosition() {
-    this._container = document.querySelector('.container');
-    this._containerCoords = this._container.getBoundingClientRect();
-
     this._elemCoords = this.elem.getBoundingClientRect();
 
     this._clientWidth = document.documentElement.clientWidth;
@@ -53,6 +50,9 @@ export default class CartIcon {
         this.elem.style.zIndex = '1000';
         this.elem.style.top = '50px';
 
+        this._container = document.querySelector('.container');
+        this._containerCoords = this._container.getBoundingClientRect();
+
         if (this._clientWidth > this._containerCoords.right + this._elemCoords.width + 20) {
           this.elem.style.left = `${this._containerCoords.right + 20}px`;
         }
@@ -62,18 +62,19 @@ export default class CartIcon {
 
       }
       else {
-        this.elem.style.position = '';
-        this.elem.style.zIndex = '';
-        this.elem.style.top = '';
-        this.elem.style.left = '';
+        this._defaultStyles();
       }
       
     }
     else {
-      this.elem.style.position = '';
-      this.elem.style.zIndex = '';
-      this.elem.style.top = '';
-      this.elem.style.left = '';
+      this._defaultStyles();
     }
+  }
+
+  _defaultStyles() {
+    this.elem.style.position = '';
+    this.elem.style.zIndex = '';
+    this.elem.style.top = '';
+    this.elem.style.left = '';
   }
 }
