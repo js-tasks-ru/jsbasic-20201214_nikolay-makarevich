@@ -32,7 +32,7 @@ export default class ProductGrid {
   }
 
   _renderItems(items) {
-    const productsInnerElement = this._container.firstElementChild;
+    const productsInnerElement = this._container.querySelector('.products-grid__inner');
     productsInnerElement.innerHTML = '';
 
     items.forEach( product => productsInnerElement
