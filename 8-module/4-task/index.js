@@ -10,6 +10,8 @@ export default class Cart {
     this.cartIcon = cartIcon;
 
     this.addEventListeners();
+    
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   addProduct(product) {
@@ -130,11 +132,11 @@ export default class Cart {
 
       let productId = '';
 
-      if ( target.alt === 'minus' ) {
+      if ( target.closest('.cart-counter__button_minus') ) {
         productId = target.closest('.cart-product').dataset.productId;
         this.updateProductCount(productId, -1);
       }
-      else if ( target.alt === 'plus' ) {
+      else if ( target.closest('.cart-counter__button_plus') ) {
         productId = target.closest('.cart-product').dataset.productId;
         this.updateProductCount(productId, 1);
       }
@@ -165,7 +167,36 @@ export default class Cart {
 
   onSubmit(event) {
     event.preventDefault();
-  };
+    
+    document.querySelector('[type="submit"]').classList.add('is-loading');
+
+    const formData = new FormData(this._cartForm);
+
+    const response = fetch('https://httpbin.org/post', {
+      body: formData,
+      method: 'POST',
+    })
+    
+    response.then( () => {
+      this.modal.setTitle('Success!');
+      this.cartItems = [];
+      this.cartIcon.update(this);
+      document.querySelector('.modal__body').innerHTML = this._modalSuccessTemplate();
+    })
+  }
+
+  _modalSuccessTemplate() {
+    return `<div class="modal__body-inner">
+    <p>Order successful! Your order is being cooked :) <br>
+      We’ll notify you about delivery time shortly.<br>
+      <img src="/assets/images/delivery.gif">
+    </p>
+    </div>`
+  }
+
+  get _cartForm() {
+    return document.querySelector('.cart-form');
+  }
 
   addEventListeners() {
     this.cartIcon.elem.onclick = () => this.renderModal();
