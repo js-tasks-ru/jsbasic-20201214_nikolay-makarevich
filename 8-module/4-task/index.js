@@ -10,7 +10,6 @@ export default class Cart {
     this.cartIcon = cartIcon;
 
     this.addEventListeners();
-
     this.onSubmit = this.onSubmit.bind(this);
   }
 
@@ -170,7 +169,6 @@ export default class Cart {
 
   onSubmit(event) {
     event.preventDefault();
-
     document.querySelector('[type="submit"]').classList.add('is-loading');
 
     const formData = new FormData(this._cartForm);
