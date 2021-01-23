@@ -39,36 +39,29 @@ export default class CartIcon {
   }
 
   updatePosition() {
-    this._elemCoords = this.elem.getBoundingClientRect();
+    let elemCoordsTop = this.elem.getBoundingClientRect().top;
 
-    this._clientWidth = document.documentElement.clientWidth;
+    if ( !document.documentElement.clientWidth > 767 ) {
+      this._defaultStyles();
+      return;
+    }
 
-    if (this._clientWidth > 767) {
-    
-      if (window.pageYOffset > this._elemCoords.top) {
-        this.elem.style.position = 'fixed';
-        this.elem.style.zIndex = '1000';
-        this.elem.style.top = '50px';
+    let leftIndent = Math.min(
+      document.querySelector('.container').getBoundingClientRect().right + 20,
+      document.documentElement.clientWidth - this.elem.offsetWidth - 10
+    )
 
-        this._container = document.querySelector('.container');
-        this._containerCoords = this._container.getBoundingClientRect();
-
-        if (this._clientWidth > this._containerCoords.right + this._elemCoords.width + 20) {
-          this.elem.style.left = `${this._containerCoords.right + 20}px`;
-        }
-        else {
-          this.elem.style.left = `${this._clientWidth - this._elemCoords.width - 10}px`;
-        }
-
-      }
-      else {
-        this._defaultStyles();
-      }
-      
+    if ( window.pageYOffset > elemCoordsTop ) {
+      this._onScrollStyles();
+      this.elem.style.left = `${leftIndent}px`
     }
     else {
       this._defaultStyles();
+      return;
     }
+
+
+    
   }
 
   _defaultStyles() {
@@ -76,5 +69,11 @@ export default class CartIcon {
     this.elem.style.zIndex = '';
     this.elem.style.top = '';
     this.elem.style.left = '';
+  }
+
+  _onScrollStyles() {
+    this.elem.style.position = 'fixed';
+    this.elem.style.zIndex = '1000';
+    this.elem.style.top = '50px';
   }
 }

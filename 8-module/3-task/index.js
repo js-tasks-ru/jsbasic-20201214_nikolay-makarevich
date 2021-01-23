@@ -11,35 +11,31 @@ export default class Cart {
       count: 1
     };
 
-    let cartItem = {};
+    const cartItem = this.cartItems.find(item => item.product.id == product.id);
 
-    const itemNames = this.cartItems.map( item => item.product.name );
-    const index = itemNames.indexOf(product.name);
-
-    if ( index < 0 || this.isEmpty()) {
+    if ( !cartItem ) {
       Object.assign(productItem.product, product);
       this.cartItems.push(productItem); 
-      cartItem = productItem;
     }
     else {
-      this.cartItems[index].count++;
-      cartItem = this.cartItems[index];
+      cartItem.count++;
     }
 
-    this.onProductUpdate(this.cartIcon);
+    this.onProductUpdate(cartItem);
   }
 
   updateProductCount(productId, amount) {
-    const itemIds = this.cartItems.map( item => item.product.id );
-    const index = itemIds.indexOf(productId);
+    const cartItem = this.cartItems.find(item => item.product.id == productId);
+    const cartItemIndex = this.cartItems.findIndex(item => item.product.id == productId);
 
-    this.cartItems[index].count += amount;
+    cartItem.count += amount;
+    
 
-    if ( this.cartItems[index].count == 0 ) {
-      this.cartItems.splice(index, 1);
+    if ( cartItem.count == 0 ) {
+      this.cartItems.splice(cartItemIndex, 1);
     }
 
-    this.onProductUpdate(this.cartIcon);
+    this.onProductUpdate(cartItem);
   }
 
   isEmpty() {
@@ -47,18 +43,11 @@ export default class Cart {
   }
 
   getTotalCount() {
-    let totalCount = 0;
-    this.cartItems.forEach( item => totalCount += item.count);
-    return totalCount;
+    return this.cartItems.reduce(( totalCount, item ) => totalCount + item.count, 0);
   }
 
   getTotalPrice() {
-    let totalPrice = 0;
-    this.cartItems.forEach( item => {
-      totalPrice += item.product.price * item.count;
-    })
-
-    return totalPrice;
+    return this.cartItems.reduce(( totalPrice, item ) => totalPrice + item.product.price * item.count, 0);
   }
 
   onProductUpdate(cartItem) {

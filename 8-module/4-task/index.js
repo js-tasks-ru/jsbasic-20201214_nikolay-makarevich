@@ -10,6 +10,8 @@ export default class Cart {
     this.cartIcon = cartIcon;
 
     this.addEventListeners();
+
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   addProduct(product) {
@@ -18,31 +20,32 @@ export default class Cart {
       count: 1
     };
 
-    const itemNames = this.cartItems.map( item => item.product.name );
-    const index = itemNames.indexOf(product.name);
+    const cartItem = this.cartItems.find(item => item.product.id == product.id);
 
-    if ( index < 0 || this.isEmpty()) {
+    if ( !cartItem ) {
       Object.assign(productItem.product, product);
       this.cartItems.push(productItem); 
     }
     else {
-      this.cartItems[index].count++;
+      cartItem.count++;
     }
 
-    this.onProductUpdate(productItem);
+    this.onProductUpdate(cartItem);
   }
 
   updateProductCount(productId, amount) {
-    const itemIds = this.cartItems.map( item => item.product.id );
-    const index = itemIds.indexOf(productId);
+    const cartItem = this.cartItems.find(item => item.product.id == productId);
+    const cartItemIndex = this.cartItems.findIndex(item => item.product.id == productId);
 
-    this.cartItems[index].count += amount;
+    cartItem.count += amount;
+    
 
-    if ( this.cartItems[index].count == 0 ) {
-      this.cartItems.splice(index, 1);
+    if ( cartItem.count == 0 ) {
+      this._cartItemId = this.cartItems[cartItemIndex].product.id;
+      this.cartItems.splice(cartItemIndex, 1);
     }
 
-    this.onProductUpdate(this.cartItems[index]);
+    this.onProductUpdate(cartItem);
   }
 
   isEmpty() {
@@ -50,17 +53,11 @@ export default class Cart {
   }
 
   getTotalCount() {
-    let totalCount = 0;
-    this.cartItems.forEach( item => totalCount += item.count);
-    return totalCount;
+    return this.cartItems.reduce(( totalCount, item ) => totalCount + item.count, 0);
   }
 
   getTotalPrice() {
-    let totalPrice = 0;
-    this.cartItems.forEach( item => {
-      totalPrice += item.product.price * item.count;
-    })
-    return totalPrice;
+    return this.cartItems.reduce(( totalPrice, item ) => totalPrice + item.product.price * item.count, 0);
   }
 
   renderProduct(product, count) {
@@ -130,11 +127,11 @@ export default class Cart {
 
       let productId = '';
 
-      if ( target.alt === 'minus' ) {
+      if ( target.closest('.cart-counter__button_minus') ) {
         productId = target.closest('.cart-product').dataset.productId;
         this.updateProductCount(productId, -1);
       }
-      else if ( target.alt === 'plus' ) {
+      else if ( target.closest('.cart-counter__button_plus') ) {
         productId = target.closest('.cart-product').dataset.productId;
         this.updateProductCount(productId, 1);
       }
@@ -146,26 +143,63 @@ export default class Cart {
   onProductUpdate(cartItem) {
     this.cartIcon.update(this);
     
-    if ( document.body.classList.contains('is-modal-open') ) {
-      if (this.cartItems.length == 0) { 
-        this.modal.close();
-        return;
-      }
-
-      let productId = cartItem.product.id;
-      let productCount = document.querySelector(`[data-product-id="${productId}"] .cart-counter__count`); 
-      let productPrice = document.querySelector(`[data-product-id="${productId}"] .cart-product__price`); 
-      let infoPrice = document.querySelector(`.cart-buttons__info-price`);
-
-      productCount.innerHTML = cartItem.count;
-      productPrice.innerHTML = `€${(cartItem.product.price * cartItem.count).toFixed(2)}`
-      infoPrice.innerHTML = `€${this.getTotalPrice().toFixed(2)}`;
+    if ( !document.body.classList.contains('is-modal-open') ) {
+      return;
     }
+
+    if ( this.cartItems.length == 0 ) { 
+      this.modal.close();
+      return;
+    }
+
+    let productId = cartItem.product.id;
+    let productCount = document.querySelector(`[data-product-id="${productId}"] .cart-counter__count`); 
+    let productPrice = document.querySelector(`[data-product-id="${productId}"] .cart-product__price`); 
+    let infoPrice = document.querySelector(`.cart-buttons__info-price`);
+
+    if ( cartItem.count == 0 ) {
+      document.querySelector(`[data-product-id="${this._cartItemId}"]`).remove();
+      infoPrice.innerHTML = `€${this.getTotalPrice().toFixed(2)}`;
+      return;
+    }
+
+    productCount.innerHTML = cartItem.count;
+    productPrice.innerHTML = `€${(cartItem.product.price * cartItem.count).toFixed(2)}`
+    infoPrice.innerHTML = `€${this.getTotalPrice().toFixed(2)}`;
   }
 
   onSubmit(event) {
     event.preventDefault();
+
+    document.querySelector('[type="submit"]').classList.add('is-loading');
+
+    const formData = new FormData(this._cartForm);
+
+    const response = fetch('https://httpbin.org/post', {
+      body: formData,
+      method: 'POST',
+    })
+    
+    response.then( () => {
+      document.querySelector('.modal__title').innerHTML = 'Success!';
+      document.querySelector('.modal__body').innerHTML = this._modalSuccessTemplate();
+      this.cartItems = [];
+      this.cartIcon.update(this);
+    })
   };
+
+  _modalSuccessTemplate() {
+    return `<div class="modal__body-inner">
+    <p>Order successful! Your order is being cooked :) <br>
+      We’ll notify you about delivery time shortly.<br>
+      <img src="/assets/images/delivery.gif">
+    </p>
+    </div>`
+  }
+
+  get _cartForm() {
+    return document.querySelector('.cart-form');
+  }
 
   addEventListeners() {
     this.cartIcon.elem.onclick = () => this.renderModal();
