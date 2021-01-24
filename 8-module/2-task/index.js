@@ -18,7 +18,7 @@ export default class ProductGrid {
   updateFilter(filter) {
     Object.assign(this.filters, filter);
 
-    let {noNuts = false, vegeterianOnly = false, maxSpiciness = 0, category = ''} = this.filters;
+    const {noNuts = false, vegeterianOnly = false, maxSpiciness = 0, category = ''} = this.filters;
 
     let filteredProducts = [];
 

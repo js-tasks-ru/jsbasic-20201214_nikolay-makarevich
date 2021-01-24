@@ -112,12 +112,12 @@ export default class Cart {
 
   renderModal() {
     this.modal = new Modal();
-    this.modal.setTitle('Your order');
-
+    
     this._modalBody = createElement('<div></div>');
     this.cartItems.forEach( item => this._modalBody.append(this.renderProduct(item.product, item.count)) );
     this._modalBody.append(this.renderOrderForm());
 
+    this.modal.setTitle('Your order');
     this.modal.setBody(this._modalBody);
     this.modal.open();
 
@@ -173,17 +173,20 @@ export default class Cart {
 
     const formData = new FormData(this._cartForm);
 
-    const response = fetch('https://httpbin.org/post', {
-      body: formData,
-      method: 'POST',
-    })
-    
-    response.then( () => {
-      document.querySelector('.modal__title').innerHTML = 'Success!';
-      document.querySelector('.modal__body').innerHTML = this._modalSuccessTemplate();
+    async function orderSuccess () {
+      await fetch('https://httpbin.org/post', {
+        body: formData,
+        method: 'POST',
+      })
+    }
+
+    orderSuccess().then( () => {
+      this.modal.setTitle('Success!');
+      this.modal.setBody(createElement(this._modalSuccessTemplate()));
       this.cartItems = [];
       this.cartIcon.update(this);
     })
+
   };
 
   _modalSuccessTemplate() {
