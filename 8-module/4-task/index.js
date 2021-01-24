@@ -136,7 +136,7 @@ export default class Cart {
       }
     })
 
-    document.querySelector('.cart-form').addEventListener('submit', this.onSubmit);
+    this._cartForm.addEventListener('submit', this.onSubmit);
   }
 
   onProductUpdate(cartItem) {
@@ -167,27 +167,23 @@ export default class Cart {
     infoPrice.innerHTML = `€${this.getTotalPrice().toFixed(2)}`;
   }
 
-  onSubmit(event) {
+  async onSubmit(event) {
     event.preventDefault();
     document.querySelector('[type="submit"]').classList.add('is-loading');
 
     const formData = new FormData(this._cartForm);
 
-    async function orderSuccess () {
-      await fetch('https://httpbin.org/post', {
-        body: formData,
-        method: 'POST',
-      })
-    }
-
-    orderSuccess().then( () => {
-      this.modal.setTitle('Success!');
-      this.modal.setBody(createElement(this._modalSuccessTemplate()));
-      this.cartItems = [];
-      this.cartIcon.update(this);
+    await fetch('https://httpbin.org/post', {
+      body: formData,
+      method: 'POST',
     })
 
-  };
+    this.modal.setTitle('Success!');
+    this.modal.setBody(createElement(this._modalSuccessTemplate()));
+    this.cartItems = [];
+    this.cartIcon.update(this);
+  }
+
 
   _modalSuccessTemplate() {
     return `<div class="modal__body-inner">
