@@ -50,5 +50,5 @@ function gridTemplate() {
 
 function cardTemplate(item) {
   let card = new ProductCard(item);
-  return createElement(`<div class="card">${card.elem.innerHTML}</div>`);
+  return card.elem;
 }
