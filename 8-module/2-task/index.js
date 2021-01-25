@@ -20,9 +20,7 @@ export default class ProductGrid {
 
     const {noNuts = false, vegeterianOnly = false, maxSpiciness = 0, category = ''} = this.filters;
 
-    let filteredProducts = [];
-
-    filteredProducts = this.products
+    const filteredProducts = this.products
       .filter(product => noNuts ? noNuts == !product.nuts : product)
       .filter(product => vegeterianOnly ? vegeterianOnly == product.vegeterian : product)
       .filter(product => maxSpiciness ? product.spiciness <= maxSpiciness : product)
