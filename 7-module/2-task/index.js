@@ -28,7 +28,7 @@ export default class Modal {
     }
   }
 
-  setTitle(title) {
+  setTitle(title = '') {
     this._title = title;
 
     if (!this._modal) {
@@ -38,11 +38,11 @@ export default class Modal {
     this._modal.querySelector('.modal__title').innerHTML = this._title;
   }
 
-  setBody(modalBody) {
+  setBody(modalBody = createElement('<div></div>')) {
     this._modalBody = modalBody;
 
     if (!this._modal) {
-      return `<div>${this._modalBody.innerHTML}</div>`;
+      return modalBody.outerHTML;
     }
 
     this._modal.querySelector('.modal__body').innerHTML = this._modalBody.outerHTML;
