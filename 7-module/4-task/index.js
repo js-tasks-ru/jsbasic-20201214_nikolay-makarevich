@@ -18,6 +18,9 @@ export default class StepSlider {
     this._sliderElements.sliderThumb.ondragstart = () => {
       return false;
     }
+
+    this._leftPercent = Math.round(100 * this._value / (this._steps - 1));
+    this._sliderLeftPercent();
     
     this._sliderElements.sliderThumb.addEventListener('pointerdown', this._onThumbPointerDown)
     this._sliderElements.slider.addEventListener('click', this._onSliderClick);
@@ -25,6 +28,10 @@ export default class StepSlider {
 
   get elem() {
     return this._container;
+  }
+
+  get value() {
+    return this._value;
   }
 
   get _sliderElements() {
@@ -118,7 +125,7 @@ export default class StepSlider {
     this._value = Math.round(this._clickPosition / this._stepWidth);
 
     this._movePercent = Math.round(100 * this._clickPosition / this._sliderWidth);
-    this._leftPercent = Math.round(100 * (this._stepWidth * this._value) / this._sliderWidth);
+    this._leftPercent = Math.round(100 * this._value / (this._steps - 1));
   }
 }
 
