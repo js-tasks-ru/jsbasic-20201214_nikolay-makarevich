@@ -52,11 +52,15 @@ export default class RibbonMenu {
   }
 
   _ribbonSelect(evt) {
+    evt.preventDefault();
     const target = evt.target;
 
     if (!target.dataset.id) {
       return;
     }
+
+    this._ribbonInner.querySelector('.ribbon__item_active').classList.toggle('ribbon__item_active');
+    target.classList.toggle('ribbon__item_active');
 
     const event = new CustomEvent('ribbon-select', { 
       detail: target.dataset.id, 
@@ -68,6 +72,10 @@ export default class RibbonMenu {
 
   get elem() {
     return this._container;
+  }
+
+  get value() {
+    return this._container.querySelector('.ribbon__item_active').dataset.id;
   }
 
   get _ribbonArrowLeft() {
