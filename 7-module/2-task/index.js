@@ -3,20 +3,17 @@ import createElement from '../../assets/lib/create-element.js';
 export default class Modal {
   constructor() {
     this._modal = null;
-    this._title = null;
-    this._modalBody = null;
 
     this._onKeyDown = this._onKeyDown.bind(this);
   }
 
   _render() {
-    this._modal = createElement(modalTemplate(this._title, this._modalBody));
-    document.body.append(this._modal);
-    document.body.classList.add('is-modal-open');
+    return this._modal = createElement(modalTemplate(this.setTitle(this._title), this.setBody(this._modalBody)));
   }
 
   open() {
-    this._render();
+    document.body.append(this._render());
+    document.body.classList.add('is-modal-open');
 
     this._modalCloseButton.addEventListener('click', this.close);
     document.addEventListener('keydown', this._onKeyDown);
@@ -31,12 +28,24 @@ export default class Modal {
     }
   }
 
-  setTitle(title) {
+  setTitle(title = '') {
     this._title = title;
+
+    if (!this._modal) {
+      return this._title;
+    }
+
+    this._modal.querySelector('.modal__title').innerHTML = this._title;
   }
 
-  setBody(modalBody) {
-    this._modalBody = modalBody.outerHTML;
+  setBody(modalBody = createElement('<div></div>')) {
+    this._modalBody = modalBody;
+
+    if (!this._modal) {
+      return modalBody.outerHTML;
+    }
+
+    this._modal.querySelector('.modal__body').innerHTML = this._modalBody.outerHTML;
   }
 
   _onKeyDown(event) {
@@ -58,13 +67,9 @@ function modalTemplate(title, body){
         <button type="button" class="modal__close">
           <img src="/assets/images/icons/cross-icon.svg" alt="close-icon" />
         </button>
-        <h3 class="modal__title">
-          ${title}
-        </h3>
+        <h3 class="modal__title">${title}</h3>
       </div>
-      <div class="modal__body">
-        ${body}
-      </div>
+      <div class="modal__body">${body}</div>
     </div>
   </div>`
 }

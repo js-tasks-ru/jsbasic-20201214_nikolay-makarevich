@@ -74,7 +74,7 @@ export default class Carousel {
 
   _onCarouselButtonClick(evt) {
     const target = evt.target;
-    if (!target.tagName == 'BUTTON') {
+    if (!target.closest('.carousel__button')) {
       return;
     }
 

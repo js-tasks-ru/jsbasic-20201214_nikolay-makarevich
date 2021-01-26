@@ -1,26 +1,18 @@
 import createElement from '../../assets/lib/create-element.js';
 
 export default class ProductCard {
-  constructor({ name, price, category, image, id }) {
+  constructor(product) {
     this._container = null;
-    this._name = name;
-    this._price = price;
-    this._category = category;
-    this._image = image;
-    this._id = id;
+    this.product = product;
 
     this._onCardButtonClick = this._onCardButtonClick.bind(this);
     this._render();
   }
 
   _render() {
-    this._container = createElement(cardTemplate(this._name, this._image, this._price));
+    this._container = createElement(cardTemplate(this.product.name, this.product.image, this.product.price));
 
-    this._cardButton.addEventListener('click', this._onCardButtonClick);
-  }
-
-  get _cardButton() {
-    return this._container.querySelector('.card__button');
+    this._container.querySelector('.card__button').addEventListener('click', this._onCardButtonClick);
   }
 
   get elem() {
@@ -28,12 +20,12 @@ export default class ProductCard {
   }
 
   _onCardButtonClick() {
-    const event = new CustomEvent("product-add", {
-      detail: this._id,
+    const event = new CustomEvent('product-add', {
+      detail: this.product.id,
       bubbles: true
     })
     
-    this._cardButton.dispatchEvent(event);
+    this.elem.dispatchEvent(event);
   }
 }
 
