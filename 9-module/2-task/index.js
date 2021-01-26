@@ -45,7 +45,7 @@ export default class Main {
   }
 
   addEventListeners() {
-    document.addEventListener('product-add', (event) => {
+    document.body.addEventListener('product-add', (event) => {
       const product = this.products.find(item => item.id == event.detail);
       this.cart.addProduct(product);
     })
