@@ -44,13 +44,12 @@ export default class CartIcon {
       this._defaultStyles();
       return;
     }
-    
-    let leftIndent = Math.min(
-      document.querySelector('.container').getBoundingClientRect().right + 20,
-      document.documentElement.clientWidth - this.elem.offsetWidth - 10
-    )
 
     if ( window.pageYOffset > elemCoordsTop ) {
+      let leftIndent = Math.min(
+        document.querySelector('.container').getBoundingClientRect().right + 20,
+        document.documentElement.clientWidth - this.elem.offsetWidth - 10
+      )
       this._onScrollStyles();
       this.elem.style.left = `${leftIndent}px`
     }
